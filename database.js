@@ -20,10 +20,10 @@ let database = {
         }
 
     },
-    disconnect(){
+    disconnect() {
         if ( this.connected == true){
             this.connected = false
-            this.mysqlConnection.end();
+            this.mysqlConnection.end()
         }
 
     }
