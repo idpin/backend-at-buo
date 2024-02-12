@@ -1,8 +1,9 @@
 const express = require("express")
 const app = express();
+const cors = require("cors");
 app.use(express.json())
 
-const port = 3000;
+const port = 4000;
 
 let routerJournals = require("./routers/routerJournals")
 
