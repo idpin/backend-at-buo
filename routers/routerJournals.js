@@ -3,7 +3,6 @@ const database = require("../database")
 
 const routerJournals = express.Router();
 
-
 routerJournals.get("/", async (req,res) => {
     database.connect();
     const journals = await database.query("SELECT * FROM journals")
