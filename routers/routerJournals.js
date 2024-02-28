@@ -22,7 +22,7 @@ routerJournals.get("/:issn", async (req, res) => {
     let journals = await database.query("SELECT * FROM journals WHERE issn = ? ", [issn])
     if ( journals.length < 1){
         database.disconnect();
-        return res.status(404).json({ error : "no journals with this issn"})
+        return res.status(404).json({ error : "Revista no participante o ISSN incorrecto"})
     } else {
         database.disconnect();
         return res.json(journals[0])
