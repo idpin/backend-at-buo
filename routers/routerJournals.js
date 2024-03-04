@@ -9,8 +9,11 @@ routerJournals.get("/", async (req,res) => {
     database.disconnect();
     res.json(journals)
 })
+routerJournals.get("/search", async (req, res) => {
+    //pasar un query.param (clave), hacer una búsqueda por todas las columnas de la tabla con un like (clave) devolviendo un array de journals
+});
 
-routerJournals.get("/:issn", async (req, res) => {
+routerJournals.get("/:issn", async (req, res) => { 
     res.set('Access-Control-Allow-Origin', '*')
     res.header("Access-Control-Allow-Origin", "*"); res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     let issn = req.params.issn;
@@ -25,7 +28,7 @@ routerJournals.get("/:issn", async (req, res) => {
         return res.status(404).json({ error : "Revista no participante o ISSN incorrecto"})
     } else {
         database.disconnect();
-        return res.json(journals[0])
+        return res.json(journals)
     }
     
     database.disconnect();
