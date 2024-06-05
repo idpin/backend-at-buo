@@ -3,14 +3,123 @@ const database = require("../database")
 
 const routerJournals = express.Router();
 
-routerJournals.get("/", async (req,res) => {
+/*routerJournals.get("/", async (req,res) => {
     database.connect();
     const journals = await database.query("SELECT * FROM journals")
     database.disconnect();
     res.json(journals)
 })
-routerJournals.get("/search", async (req, res) => {
+*/
+routerJournals.get("/", async (req, res) => {
+    console.log(req.query);
+    database.connect();
+    let journals =[];
+    console.log(req.query.search);
+    console.log(req.query.field);
+    let query = 'SELECT * FROM journals WHERE ';
+    let bindingParams = [];
+    if( req.query.search != undefined && req.query.search != '' ){
+         query += "(issn like ? or title like ?)";
+         bindingParams.push(['%'+req.query.search+'%'],['%'+req.query.search+'%']);
+    }
+
+    if( req.query.cuartil != undefined && req.query.cuartil != '' ){
+        let cuartil = req.query.cuartil.split(",")
+        console.log(cuartil)
+        if(bindingParams.length > 0){
+            query += " and jcrq in ?";
+        }else{
+            query += "jcrq in ? ";
+        }
+        bindingParams.push([cuartil]);
+    }
+
+    if( req.query.field != undefined && req.query.field != '' ){
+        if(bindingParams.length > 0){
+            query += "and field = ?";
+        }else{
+            query += "field = ?";
+        }
+        bindingParams.push([req.query.field]);
+    }
+
+        if( req.query.publisher != undefined && req.query.publisher != '' ){
+            if(bindingParams.length > 0){
+                query += "and publisher = ?";
+            }else{
+                query += "publisher = ?";
+            }
+            bindingParams.push([req.query.publisher]);
+
+        }
+
+
+        if( req.query.jcrq != undefined && req.query.jcrq != '' ){
+            if(bindingParams.length > 0){
+                query += "and jcrq = ?";
+            }else{
+                query += "jcrq = ?";
+            }
+            bindingParams.push([req.query.jcrq]);
+        }
+
+
+
+
+
+
+    
+    if(bindingParams.length == 0){
+        query = "SELECT * FROM journals";
+    }
+    console.log(query);
+    console.log(bindingParams);
+    journals = await database.query(query, bindingParams);
+
+    /*
+    if(){
+        journals = await database.query("SELECT * FROM journals");
+    }*/
+    database.disconnect();
+    res.json(journals)
     //pasar un query.param (clave), hacer una búsqueda por todas las columnas de la tabla con un like (clave) devolviendo un array de journals
+});
+
+routerJournals.get("/fields", async (req, res) => {
+    console.log(req.query);
+    database.connect();
+    let fields =[];
+    fields = await database.query("SELECT distinct field as value, field as label FROM journals");
+
+    database.disconnect();
+    res.json(fields)
+    
+    //TODO: Pendiente llamar a esta peticion para poblar el select del React
+});
+
+
+routerJournals.get("/publishers", async (req, res) => {
+    console.log(req.query);
+    database.connect();
+    let publishers =[];
+    publishers = await database.query("SELECT distinct publisher as value, publisher as label FROM journals");
+
+    database.disconnect();
+    res.json(publishers)
+    
+    //TODO: Pendiente llamar a esta peticion para poblar el select del React
+});
+
+routerJournals.get("/cuartiles", async (req, res) => {
+    console.log(req.query);
+    database.connect();
+    let cuartiles =[];
+    cuartiles = await database.query("SELECT distinct jcrq as value, cuartiles as label FROM journals");
+
+    database.disconnect();
+    res.json(cuartiles)
+    
+    //TODO: Pendiente llamar a esta peticion para poblar el select del React
 });
 
 routerJournals.get("/:issn", async (req, res) => { 
