@@ -34,6 +34,30 @@ routerJournals.get("/", async (req, res) => {
         bindingParams.push([cuartil]);
     }
 
+    if( req.query.publisher != undefined && req.query.publisher != '' ){
+        let publisher = req.query.publisher.split(",")
+        console.log(publisher)
+        if(bindingParams.length > 0){
+            query += " and publisher in ?";
+        }else{
+            query += "publisher in ? ";
+        }
+        bindingParams.push([publisher]);
+    }
+
+    if( req.query.cuartilscopus != undefined && req.query.cuartilscopus != '' ){
+        let cuartilscopus = req.query.cuartilscopus.split(",")
+        console.log(cuartilscopus)
+        if(bindingParams.length > 0){
+            query += " and sjrq in ?";
+        }else{
+            query += "sjrq in ? ";
+        }
+        bindingParams.push([cuartilscopus]);
+    }
+
+    
+
     if( req.query.field != undefined && req.query.field != '' ){
         if(bindingParams.length > 0){
             query += "and field = ?";
@@ -43,15 +67,15 @@ routerJournals.get("/", async (req, res) => {
         bindingParams.push([req.query.field]);
     }
 
-        if( req.query.publisher != undefined && req.query.publisher != '' ){
-            if(bindingParams.length > 0){
-                query += "and publisher = ?";
-            }else{
-                query += "publisher = ?";
-            }
-            bindingParams.push([req.query.publisher]);
+    // if( req.query.publisher != undefined && req.query.publisher != '' ){
+      //  if(bindingParams.length > 0){
+          //  query += "and publisher = ?";
+     ///   }else{
+          //  query += "publisher = ?";
+     //   }
+      //  bindingParams.push([req.query.publisher]);
 
-        }
+  //  } Si quito todo esto hago algún cambio en la recuperación principal???? PORTE
 
 
         if( req.query.jcrq != undefined && req.query.jcrq != '' ){
@@ -62,7 +86,14 @@ routerJournals.get("/", async (req, res) => {
             }
             bindingParams.push([req.query.jcrq]);
         }
-
+        if( req.query.sjrq != undefined && req.query.sjrqq != '' ){
+            if(bindingParams.length > 0){
+                query += "and sjrq = ?";
+            }else{
+                query += "sjrq = ?";
+            }
+            bindingParams.push([req.query.sjrq]);
+        }
 
 
 
@@ -118,6 +149,20 @@ routerJournals.get("/cuartiles", async (req, res) => {
 
     database.disconnect();
     res.json(cuartiles)
+
+});
+
+routerJournals.get("/cuartilscopus", async (req, res) => {
+    console.log(req.query);
+    database.connect();
+    let cuartilscopus =[];
+    cuartilscopus = await database.query("SELECT distinct sjrq as value, cuartilscopus as label FROM journals");
+    
+    database.disconnect();
+    res.json(cuartilscopus)
+
+    
+    
     
     //TODO: Pendiente llamar a esta peticion para poblar el select del React
 });
