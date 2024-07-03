@@ -15,26 +15,32 @@ routerArticles.get("/", async (req,res) => {
 })
 
 
-routerArticles.post("/", async (req,res) => {
+
+
+routerArticles.post("/", async (req, res) => {
     let titulo = req.body.titulo
     let doi = req.body.doi
     let doiUrl = req.body.doiUrl
+    let fechaEnvio = req.body.fechaEnvio
     let fechaAceptacion = req.body.fechaAceptacion
-    let autor = req.body.autor
+    let idioma = req.body.idioma
+    let autorLikeEditor = req.body.autorLikeEditor
+    let autorLikePortal = req.body.autorLikePortal
     let departamento = req.body.departamento
-    let facultad = req.body.facultad
+    let ramaDepartamento = req.body.ramaDepartamento
     let tipologia = req.body.tipologia
     let editor = req.body.editor
     let revista = req.body.revista
-    let issn = req.body.issn
+    let pIssn = req.body.pIssn
     let eIssn = req.body.eIssn
     let modelOa = req.body.modelOa
+    let licencia = req.body.licencia
     let fechaSolicitud = req.body.fechaSolicitud
     let fechaAprobacion = req.body.fechaAprobacion
-    let diasPendientes = req.body.diasPendientes
+    let diasPendiente = req.body.diasPendiente
     let precio = req.body.precio
-    let financiador = req.body.financiador
     let idFinanciador = req.body.idFinanciador
+    let financiador = req.body.financiador
     let periodo = req.body.periodo
 
 
@@ -42,7 +48,7 @@ routerArticles.post("/", async (req,res) => {
     if (isNaN(periodo) ){
         return res.status(400).json({ error: "periodo no es un número"})
     }
-    if (isNaN(issn) ){
+    if (isNaN(pIssn) ){
         return res.status(400).json({ error: "issn no es un número"})
     }
     
@@ -51,8 +57,8 @@ routerArticles.post("/", async (req,res) => {
 
     try {
     let insertedArticle = await database.query(
-        "INSERT INTO articles (titulo, doi, doiUrl, fechaAceptacion, autor, departamento, facultad, tipologia, editor, revista, issn, eIssn, modelOa, fechaSolicitud, fechaAprobacion, diasPendientes, precio, financiador, idFinanciador, periodo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [titulo, doi, doiUrl, fechaAceptacion, autor, departamento, facultad, tipologia, editor, revista, issn, eIssn, modelOa, fechaSolicitud, fechaAprobacion, diasPendientes, precio, financiador, idFinanciador, periodo])
+        "INSERT INTO articles (titulo, doi, doiUrl, fechaEnvio, fechaAceptacion, idioma, autorLikeEditor, autorLikePortal, departamento, ramaDepartamento, tipologia, editor, revista, pIssn, eIssn, modelOa, licencia, fechaSolicitud, fechaAprobacion, diasPendiente, precio, idFinanciador, financiador, periodo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [titulo, doi, doiUrl, fechaEnvio, fechaAceptacion, idioma, autorLikeEditor, autorLikePortal, departamento, ramaDepartamento, tipologia, editor, revista, pIssn, eIssn, modelOa, licencia, fechaSolicitud, fechaAprobacion, diasPendiente, precio, idFinanciador, financiador, periodo])
     } catch (e){
         database.disconnect();
         return res.status(400).json({ error: "Error al rellenar el formulario con los datos del artículo aprobado"})

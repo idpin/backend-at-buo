@@ -1,11 +1,11 @@
 const express = require("express")
 const database = require("../database")
 
-const jwt = require("jsonwebtoken")
 const routerUsers = express.Router();
 
 
 let activeApiKeys = require("../activeApiKeys")
+const jwt = require("jsonwebtoken")
 
 
 
@@ -34,21 +34,21 @@ routerUsers.post("/login", async (req,res) => {
         database.disconnect();
 
         if ( selectedUsers.length == 0){
-            return res.status(401).json({ error: "invadil email or password" })
+            return res.status(401).json({ error: "usuario o contraseña incorrectos" })
         }
 
-        let apikey = jwt.sign({
+        let apiKey = jwt.sign({
             email: email,
             id: selectedUsers[0].id,
             time: Date.now()
         }, "secret")
 
-        activeApiKeys.push(apikey)
+        activeApiKeys.push(apiKey)
 
         res.json({
-            apikey: apikey,
+            apiKey: apiKey,
             id: selectedUsers[0].id,
-            email: selectedUsers[0].email,
+            email: selectedUsers[0].email
         })
 
     } catch ( e ){
@@ -106,14 +106,14 @@ routerUsers.post("/", async (req,res) => {
 })
 
 routerUsers.get("/disconect", async (req, res) => {
-    let apikey = req.query.apikey
+    let apiKey = req.query.apiKey
 
-    let index = activeApiKey.indexOf(apikey)
-    if (index != -1){
-        activeApiKeys.splice(index,1)
+    let index = activeApiKeys.indexOf(apiKey) 
+    if (index != -1) {
+        activeApiKeys.splice(index, 1);
         res.json({ disconected : true })
     } else {
-        res.status(400).json({ error: "usuario no encontrado"})
+       return res.status(400).json({ error: "usuario no encontrado"})
     }
 })
 

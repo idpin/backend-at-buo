@@ -23,6 +23,18 @@ routerJournals.get("/", async (req, res) => {
          bindingParams.push(['%'+req.query.search+'%'],['%'+req.query.search+'%']);
     }
 
+    if( req.query.medida != undefined && req.query.medida != '' ){
+        let medida = req.query.medida.split(",")
+        console.log(medida)
+        if(bindingParams.length > 0){
+            query += " and sjrq in ?";
+        }else{
+            query += "sjrq in ? ";
+        }
+        bindingParams.push([medida]);
+    }
+   
+   
     if( req.query.cuartil != undefined && req.query.cuartil != '' ){
         let cuartil = req.query.cuartil.split(",")
         console.log(cuartil)
@@ -33,6 +45,9 @@ routerJournals.get("/", async (req, res) => {
         }
         bindingParams.push([cuartil]);
     }
+
+    
+
 
     if( req.query.publisher != undefined && req.query.publisher != '' ){
         let publisher = req.query.publisher.split(",")
@@ -45,17 +60,7 @@ routerJournals.get("/", async (req, res) => {
         bindingParams.push([publisher]);
     }
 
-    if( req.query.cuartilscopus != undefined && req.query.cuartilscopus != '' ){
-        let cuartilscopus = req.query.cuartilscopus.split(",")
-        console.log(cuartilscopus)
-        if(bindingParams.length > 0){
-            query += " and sjrq in ?";
-        }else{
-            query += "sjrq in ? ";
-        }
-        bindingParams.push([cuartilscopus]);
-    }
-
+   
     
 
     if( req.query.field != undefined && req.query.field != '' ){
@@ -78,15 +83,18 @@ routerJournals.get("/", async (req, res) => {
   //  } Si quito todo esto hago algún cambio en la recuperación principal???? PORTE
 
 
-        if( req.query.jcrq != undefined && req.query.jcrq != '' ){
-            if(bindingParams.length > 0){
+         if( req.query.jcrq != undefined && req.query.jcrq != '' ){
+             if(bindingParams.length > 0){
                 query += "and jcrq = ?";
-            }else{
+             }else{
                 query += "jcrq = ?";
-            }
-            bindingParams.push([req.query.jcrq]);
+             }
+             bindingParams.push([req.query.jcrq]);
         }
-        if( req.query.sjrq != undefined && req.query.sjrqq != '' ){
+
+
+
+        if( req.query.sjrq != undefined && req.query.sjrq != '' ){
             if(bindingParams.length > 0){
                 query += "and sjrq = ?";
             }else{
@@ -141,6 +149,7 @@ routerJournals.get("/publishers", async (req, res) => {
     //TODO: Pendiente llamar a esta peticion para poblar el select del React
 });
 
+
 routerJournals.get("/cuartiles", async (req, res) => {
     console.log(req.query);
     database.connect();
@@ -152,14 +161,15 @@ routerJournals.get("/cuartiles", async (req, res) => {
 
 });
 
-routerJournals.get("/cuartilscopus", async (req, res) => {
+
+routerJournals.get("/medida", async (req, res) => {
     console.log(req.query);
     database.connect();
-    let cuartilscopus =[];
-    cuartilscopus = await database.query("SELECT distinct sjrq as value, cuartilscopus as label FROM journals");
+    let medida =[];
+    medida = await database.query("SELECT distinct sjrq as value, medida as label FROM journals");
     
     database.disconnect();
-    res.json(cuartilscopus)
+    res.json(medida)
 
     
     
