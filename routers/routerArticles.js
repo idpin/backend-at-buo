@@ -64,6 +64,24 @@ routerArticles.post("/", async (req, res) => {
         return res.status(400).json({ error: "Error al rellenar el formulario con los datos del artículo aprobado"})
     }
 
+    routerArticles.delete("/:id", async (req, res) => {
+        let id = req.params.id
+        if ( id == undefined){
+            return res.status(400).json({error : "no id params"})
+    
+        }
+    
+        database.connect();
+        try {
+            await database.query("DELETE FROM articles WHERE id = ?", [id])
+        } catch ( e ){
+            database.disconnect();
+            return res.status(400).json({ error : "no in delete article"})
+        }
+        database.disconnect();
+        res.json({ deleted: true })
+    } )
+
 })
 
 module.exports=routerArticles
