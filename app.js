@@ -12,12 +12,12 @@ let routerJournals = require("./routers/routerJournals")
 let routerUsers = require("./routers/routerUsers")
 let routerArticles = require("./routers/routerArticles")
 let routerAnalytics = require("./routers/routerAnalytics")
+let routerAssigned = require("./routers/routerAssigned")
 
 
 
 app.use(["/articles"], (req, res, next) => {
-    console.log("middleware excution")
-    console.log(req)
+    
     let apiKey = req.query.apiKey;
     if ( apiKey == undefined){
         return res.status(401).json({ error: "no apiKey"})
@@ -29,6 +29,7 @@ app.use(["/articles"], (req, res, next) => {
     }
 
     req.infoInApiKey = infoInApiKey;
+    console.log("estoy antes del next")
     next();    
 
     
@@ -41,6 +42,7 @@ app.use("/journals",routerJournals)
 app.use("/users", routerUsers)
 app.use("/articles", routerArticles)
 app.use("/analytics", routerAnalytics)
+app.use("/assigned", routerAssigned)
 
 
 app.listen(port, () => {

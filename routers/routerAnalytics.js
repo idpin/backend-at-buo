@@ -4,6 +4,18 @@ let database = require("../database")
 let routerAnalytics = express.Router();
 
 
+
+routerAnalytics.get("/total", async (req,res) => {
+    let articles = []
+    database.connect();
+    articles = await database.query("SELECT COUNT(*) FROM articles;")
+    console.log(articles);
+
+    database.disconnect();
+    res.json(articles)
+
+})
+
 routerAnalytics.get("/rama", async (req,res) => {
     let articles = []
     database.connect();
